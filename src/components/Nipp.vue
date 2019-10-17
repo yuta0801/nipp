@@ -8,7 +8,7 @@
     </form>
 
     <!--  Resizable: (base: https://stackoverflow.com/questions/47017753/monaco-editor-dynamically-resizable) -->
-    <div style="resize: vertical; overflow: auto; height: 20em;">
+    <div v-if="!noEditor" style="resize: vertical; overflow: auto; height: 20em;">
       <!--  NOTE: `:language=` is needed to highlight JavaScript -->
       <!--  NOTE: "height: 98%;" allows user to resize easier-->
       <monaco-editor v-model="script"
@@ -64,7 +64,7 @@ import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 const pakoAsync = () => import('pako');
 import * as uaDeviceDetector from 'ua-device-detector';
 import * as monacoEditor from 'monaco-editor'
-const MonacoEditor = () => import('vue-monaco');
+const MonacoEditor = () => (console.log('monaco loaded'), import('vue-monaco'));
 import {loadScriptOnce} from "@/utils";
 
 // Get Opal object
@@ -317,6 +317,8 @@ export default class Nipp extends Vue {
   enableClickRun = false;
   // Use promise-wait or not
   enablePromiseWait = false;
+  // Doesn't display editor or not
+  noEditor = false;
   transpilers: ReadonlyArray<Transpiler> = [
     RubyTranspiler,
     Es2017Transpiler,
@@ -351,6 +353,7 @@ export default class Nipp extends Vue {
     this.enableClickRun = titleAndCode.urlOptions.includes("click_run");
     // Set enable-promise-wait
     this.enablePromiseWait = titleAndCode.urlOptions.includes("promise_wait");
+    this.noEditor = titleAndCode.urlOptions.includes("no_editor");
     if (titleAndCode.urlOptions.includes("es2017")) {
       this.transpiler = Es2017Transpiler;
     } else if (titleAndCode.urlOptions.includes("func_es2017")) {
@@ -446,6 +449,10 @@ export default class Nipp extends Vue {
     // If promise_wait is enable
     if (this.enablePromiseWait) {
       options.push("promise_wait");
+    }
+    // If no_editor is enable
+    if (this.noEditor) {
+      options.push("no_editor");
     }
     // Generate options part
     return options.join(",");

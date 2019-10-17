@@ -73,6 +73,7 @@ Note that `<Page Title>`, `<Options>` and <`Compressed Code`> are under URL frag
 - `lzma`: Compress code by using LZMA (default: deflate)
 - `click_run`: Click to run not real-time evaluation
 - `promise_wait`: Wait for Promise evaluation in output
+- `no_editor`: Doesn't display code editor
 
 
 ## [PWA] - Progressive Web Apps
